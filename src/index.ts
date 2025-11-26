@@ -38,7 +38,20 @@ type SearchData = {
 
 const dataUrl = "/iso-4217.json";
 
+function filterCountry(
+	headerValue: string,
+	dummyRowValue: any,
+	rowData: any,
+	filterParams: any
+) {
+	if (!headerValue || headerValue.length == 0) {
+		return true;
+	}
 
+	const rowValue = rowData.countries.join(", ");
+
+	return filterRegex(headerValue, rowValue, rowData, filterParams);
+}
 
 function filterRegex(
 	headerValue: string,
@@ -377,7 +390,7 @@ async function main() {
 				field: "countries",
 				formatter: (cell) => cell.getValue().join(", "),
 				headerFilter: "input",
-				headerFilterFunc: filterTags,
+				headerFilterFunc: filterCountry,
 				responsive: 0,
 				title: "Countries",
 				width: 375,
