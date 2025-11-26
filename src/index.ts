@@ -94,6 +94,34 @@ function filterRegex(
 	return false;
 }
 
+function filterSubunit(
+	headerValue: string,
+	rowValue: number,
+	rowData: any,
+	filterParams: any
+) {
+	if (!headerValue) {
+		return true;
+	}
+
+	if (rowValue === null || rowValue === undefined) {
+		return false;
+	}
+
+	try {
+		const search = parseInt(headerValue);
+		if (isNaN(search)) {
+			throw new Error("not a number");
+		}
+		console.log(`filterSubunit: comparing ${rowValue} to ${search}`);
+		return rowValue === search;
+	}
+	catch (err) {
+		console.log(`ERROR: invalid subunit filter value: ${headerValue} - ${err}`);
+	}
+	return true;
+}
+
 function filterTags(
 	headerValue: string,
 	rowValue: string[],
@@ -242,6 +270,7 @@ async function main() {
 			}
 			if (key == "dir") {
 				initialSort[0].dir = value == "desc" ? "desc" : "asc";
+				continue;
 			}
 			if (key && value) {
 				filters.push({ field: key, type: "=", value: value });
@@ -308,7 +337,7 @@ async function main() {
 			{
 				field: "subunit",
 				headerFilter: "input",
-				headerFilterFunc: filterRegex,
+				headerFilterFunc: filterSubunit,
 				headerHozAlign: "center",
 				hozAlign: "center",
 				responsive: 0,
